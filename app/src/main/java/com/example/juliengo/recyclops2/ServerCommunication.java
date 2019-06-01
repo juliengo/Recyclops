@@ -16,8 +16,23 @@ public class ServerCommunication  extends AsyncTask<String, Void, String>{
     @Override
     protected String doInBackground(String ... strings){
         String urlString = strings[0];
-        String postData = strings[1];
+        String encodedImage = strings[1];
         String response = "";
+        String postData = "{\n" +
+                "  \"requests\": [\n" +
+                "      {\n" +
+                "        \"image\":{\n" +
+                "        \"content\": \"" + encodedImage +"\"\n" +
+                "        },\n" +
+                "        \"features\": [\n" +
+                "          {\n" +
+                "            \"type\": \"LABEL_DETECTION\",\n" +
+                "            \"maxResults\": 10\n" +
+                "          }\n" +
+                "        ]\n" +
+                "      }\n" +
+                "  ]\n" +
+                "}";
 
         try {
             URL url = new URL(urlString);
