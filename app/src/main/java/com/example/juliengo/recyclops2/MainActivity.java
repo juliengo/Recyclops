@@ -1,5 +1,6 @@
 package com.example.juliengo.recyclops2;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,8 +14,47 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+
+    Map<String, String> map = new HashMap<>();
+    public void initialize(){
+        map.put("styrofoam", "black bin - garbage");
+        map.put("light bulb", "black bin - garbage");
+        map.put("syringe", "black bin - garbage");
+        map.put("aluminium", "blue bin - containers");
+        map.put("can", "blue bin - containers");
+        map.put("bottle", "blue bin - containers");
+        map.put("tin", "blue bin - containers");
+        map.put("carton", "blue bin - containers");
+        map.put("glass", "blue bin - containers");
+        map.put("jar", "blue bin - containers");
+        map.put("drinkware", "blue bin - containers");
+        map.put("cup", "blue bin - containers");
+        map.put("paper", "gray bin - paper and bags");
+        map.put("newspaper", "gray bin - paper and bags");
+        map.put("magazine", "gray bin - paper and bags");
+        map.put("book", "gray bin - paper and bags");
+        map.put("envelope", "gray bin - paper and bags");
+        map.put("cardboard", "gray bin - paper and bags");
+        map.put("box", "gray bin - paper and bags");
+        map.put("plastic bag", "gray bin - paper and bags");
+        map.put("shopping bag", "gray bin - paper and bags");
+        map.put("toilet paper", "gray bin - paper and bags");
+        map.put("egg carton", "gray bin - paper and bags");
+        map.put("food", "green bin - compost");
+        map.put("bone", "green bin - compost");
+        map.put("soup", "green bin - compost");
+        map.put("peel", "green bin - compost");
+        map.put("eggshell", "green bin - compost");
+        map.put("hair", "green bin - compost");
+        map.put("plant", "green bin - compost");
+        map.put("flower", "green bin - compost");
+        map.put("toothpick", "green bin - compost");
+        map.put("ashes", "green bin - compost");
+    }
 
     String url = "http://www.google.com";
 
@@ -36,10 +76,35 @@ public class MainActivity extends AppCompatActivity {
             "  ]\n" +
             "}";
 
+    public void recycle(String[] labels){
+        //Toast toast = Toast.makeText(getApplicationContext(),"hi",Toast.LENGTH_LONG);
+        //toast.show();
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        String itemtype = "Item type: ";
+        String bin = "Should be placed in: ";
+        alertDialogBuilder.setTitle("Result");
+        for (String label : labels){
+            String result = map.get(label);
+            if(result !=  null){
+                itemtype += label;
+                bin += result;
+                alertDialogBuilder.setMessage(itemtype + "\n" + bin);
+
+                AlertDialog dialog = alertDialogBuilder.create();
+                dialog.show();
+                return;
+            }
+        }
+        alertDialogBuilder.setMessage("Could not identify this item.\n" + bin + "garbage");
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initialize();
     }
 
     String test = "hi";
@@ -92,8 +157,10 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     String response = new ServerCommunication().execute(urlString,body).get();
 
-                    Toast toast = Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG);
-                    toast.show();
+                    String[] labels = new ResponseJSON(response).getLabels();
+
+                    recycle(labels);
+
                 } catch (Exception e){
 
                 }
